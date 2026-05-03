@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel Deployment Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .status-pill {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen font-sans">
+
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-flex items-center justify-center p-3 bg-black text-white rounded-full mb-4 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L24 21H0L12 1Z"/></svg>
+            </div>
+            <h1 class="text-4xl font-bold tracking-tight text-slate-900 mb-2">Deployment Success</h1>
+            <p class="text-slate-500 text-lg">If you can see this page, your Vercel deployment was successful.</p>
+        </header>
+
+        <!-- Status Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <p class="text-sm font-medium text-slate-500 mb-1">Status</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span class="text-2xl font-bold text-emerald-600">Live</span>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <p class="text-sm font-medium text-slate-500 mb-1">Environment</p>
+                <span id="env-badge" class="text-2xl font-bold text-slate-800">Production</span>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <p class="text-sm font-medium text-slate-500 mb-1">Response Time</p>
+                <span id="latency" class="text-2xl font-bold text-slate-800">-- ms</span>
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <h2 class="font-semibold text-slate-700">Diagnostic Information</h2>
+                <button onclick="window.location.reload()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Refresh Data</button>
+            </div>
+            <div class="p-6">
+                <dl class="divide-y divide-slate-100">
+                    <div class="py-3 flex justify-between flex-wrap">
+                        <dt class="text-sm text-slate-500">Host</dt>
+                        <dd id="info-host" class="text-sm font-mono text-slate-800">loading...</dd>
+                    </div>
+                    <div class="py-3 flex justify-between flex-wrap">
+                        <dt class="text-sm text-slate-500">Platform</dt>
+                        <dd id="info-platform" class="text-sm font-mono text-slate-800">Vercel (Detected via User-Agent)</dd>
+                    </div>
+                    <div class="py-3 flex justify-between flex-wrap">
+                        <dt class="text-sm text-slate-500">Protocol</dt>
+                        <dd id="info-proto" class="text-sm font-mono text-slate-800 text-emerald-600">HTTPS / SSL Secure</dd>
+                    </div>
+                    <div class="py-3 flex justify-between flex-wrap">
+                        <dt class="text-sm text-slate-500">Local Time</dt>
+                        <dd id="info-time" class="text-sm font-mono text-slate-800">--</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Interaction Test -->
+        <div class="bg-blue-600 rounded-2xl p-8 text-white shadow-xl shadow-blue-200">
+            <h3 class="text-xl font-bold mb-2">Logic Verification</h3>
+            <p class="text-blue-100 mb-6">Test dynamic interactivity to ensure JavaScript hydrated correctly.</p>
+            <div class="flex items-center gap-4">
+                <button id="counter-btn" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors shadow-sm">
+                    Clicks: <span id="count">0</span>
+                </button>
+                <div id="logic-status" class="bg-blue-500/50 px-4 py-2 rounded-lg text-sm font-medium border border-blue-400">
+                    Hydration Pending...
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-slate-400 text-sm">
+            &copy; 2024 Deployment Verifier &bull; Built for Vercel
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startTime = performance.now();
+            
+            // 1. Update Platform Info
+            document.getElementById('info-host').textContent = window.location.hostname;
+            document.getElementById('info-time').textContent = new Date().toLocaleString();
+            
+            // 2. Logic Test (Hydration check)
+            let count = 0;
+            const countEl = document.getElementById('count');
+            const btn = document.getElementById('counter-btn');
+            const status = document.getElementById('logic-status');
+
+            btn.addEventListener('click', () => {
+                count++;
+                countEl.textContent = count;
+                status.textContent = "Logic working ✅";
+                status.classList.remove('bg-blue-500/50');
+                status.classList.add('bg-emerald-500/50');
+            });
+
+            // Initial status update
+            setTimeout(() => {
+                status.textContent = "Hydration Complete ✅";
+                status.classList.remove('bg-blue-500/50');
+                status.classList.add('bg-emerald-400/30');
+            }, 500);
+
+            // 3. Performance / Latency Check
+            window.onload = () => {
+                const endTime = performance.now();
+                const latency = Math.round(endTime - startTime);
+                document.getElementById('latency').textContent = latency + " ms";
+            };
+
+            // 4. Determine Environment (Simple check)
+            const envBadge = document.getElementById('env-badge');
+            if (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')) {
+                envBadge.textContent = "Local Dev";
+                envBadge.className = "text-2xl font-bold text-orange-500";
+            } else if (window.location.hostname.includes('vercel.app')) {
+                envBadge.textContent = "Preview/Staging";
+                envBadge.className = "text-2xl font-bold text-blue-500";
+            }
+        });
+    </script>
+</body>
+</html>
